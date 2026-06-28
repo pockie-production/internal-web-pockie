@@ -5,7 +5,8 @@ import Login from './pages/Login';
 import { DashboardPage } from './pages/DashboardPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { InternalLayout } from './layouts/InternalLayout';
-
+import { EkycListPage } from './pages/ekyc/EkycListPage';
+import { EkycDetailPage } from './pages/ekyc/EkycDetailPage';
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();
 
@@ -45,7 +46,8 @@ function App() {
       >
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/users" element={<PlaceholderPage />} />
-        <Route path="/ekyc-review" element={<PlaceholderPage />} />
+        <Route path="/ekyc-review" element={<EkycListPage />} />
+        <Route path="/ekyc-review/:id" element={<EkycDetailPage />} />
         <Route path="/trends" element={<PlaceholderPage />} />
         <Route path="/vouchers" element={<PlaceholderPage />} />
         <Route path="/banks" element={<PlaceholderPage />} />
