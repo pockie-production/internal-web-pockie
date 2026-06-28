@@ -1,17 +1,18 @@
-import { useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAuthStore } from './store/authStore'
-import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
+import { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/authStore';
+import Login from './pages/Login';
+import { DashboardPage } from './pages/DashboardPage';
+import { PlaceholderPage } from './pages/PlaceholderPage';
+import { InternalLayout } from './layouts/InternalLayout';
 
-// Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -33,17 +34,31 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route 
-        path="/dashboard/*" 
+      
+      {/* Protected Internal Routes wrapped in Layout */}
+      <Route
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <InternalLayout />
           </ProtectedRoute>
-        } 
-      />
+        }
+      >
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/users" element={<PlaceholderPage />} />
+        <Route path="/ekyc-review" element={<PlaceholderPage />} />
+        <Route path="/trends" element={<PlaceholderPage />} />
+        <Route path="/vouchers" element={<PlaceholderPage />} />
+        <Route path="/banks" element={<PlaceholderPage />} />
+        <Route path="/campaigns" element={<PlaceholderPage />} />
+        <Route path="/analytics" element={<PlaceholderPage />} />
+        <Route path="/audit-logs" element={<PlaceholderPage />} />
+      </Route>
+
+      {/* Fallbacks */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
