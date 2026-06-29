@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Search, Filter, Users, ShieldCheck, Landmark, CircleUserRound, X, RefreshCw, Ban, CheckCircle2 } from 'lucide-react';
+import { Search, Filter, Users, ShieldCheck, Landmark, CircleUserRound, X, RefreshCw, Ban, CheckCircle2, Plus, Trash2 } from 'lucide-react';
 import { getUserDetail, getUsers, updateUserStatus } from '../features/users/users.api';
 import type { InternalAccountType, KycStatus, UserDetail, UserListItem, UserStatus, UsersListResponse } from '../features/users/users.types';
 import { trackInternalEvent } from '../lib/analytics';
 import { useAuthStore } from '../store/authStore';
+import { CreateUserModal } from '../features/users/components/CreateUserModal';
 
 const accountTypeOptions: Array<{ label: string; value: '' | InternalAccountType }> = [
   { label: 'All Types', value: '' },
@@ -79,6 +80,7 @@ export const UsersPage: React.FC = () => {
   const [detail, setDetail] = useState<UserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [statusSaving, setStatusSaving] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const hasInitializedFilters = useRef(false);
 
   const canUpdateStatus = !!user?.permissions?.includes('users.update_status');
@@ -200,17 +202,28 @@ export const UsersPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-slate-900">Users</h1>
           <p className="mt-1 text-sm text-slate-500">Quản lý toàn bộ tài khoản end-user, nội bộ và ngân hàng trên hệ thống.</p>
         </div>
-        <button
-          onClick={() => {
-            trackInternalEvent({ eventName: 'users_refresh_click', page: '/users', feature: 'users' });
-            void loadUsers(page, 'refresh');
-          }}
-          disabled={loading}
-          className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              trackInternalEvent({ eventName: 'users_refresh_click', page: '/users', feature: 'users' });
+              void loadUsers(page, 'refresh');
+            }}
+            disabled={loading}
+            className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+          >
+            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+          {canUpdateStatus && (
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              New User
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
@@ -576,6 +589,18 @@ export const UsersPage: React.FC = () => {
                           Suspend
                         </button>
                       )}
+                      <button
+                        disabled={statusSaving}
+                        onClick={() => {
+                          if (confirm('Are you sure you want to delete this user? This action will block their access immediately.')) {
+                            void handleStatusUpdate(detail, 'DELETED');
+                          }
+                        }}
+                        className="inline-flex items-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-700 disabled:opacity-50"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </button>
                     </div>
                   </section>
                 )}
@@ -583,6 +608,16 @@ export const UsersPage: React.FC = () => {
             )}
           </aside>
         </div>
+      )}
+
+      {isCreateModalOpen && (
+        <CreateUserModal
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={() => {
+            setIsCreateModalOpen(false);
+            void loadUsers(1, 'refresh');
+          }}
+        />
       )}
     </div>
   );

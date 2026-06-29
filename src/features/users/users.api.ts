@@ -24,3 +24,16 @@ export const updateUserStatus = async (id: string, status: UserStatus, reason?: 
   const { data } = await axios.patch(`/api/v1/internal/users/${id}/status`, { status, reason });
   return data;
 };
+
+export interface CreateUserPayload {
+  email: string;
+  password?: string;
+  fullName?: string;
+  roles: string[];
+}
+
+export const createUser = async (payload: CreateUserPayload) => {
+  const { data } = await axios.post('/api/v1/internal/users', payload);
+  return data;
+};
+
