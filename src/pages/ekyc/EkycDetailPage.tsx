@@ -190,7 +190,7 @@ export const EkycDetailPage = () => {
                     <p className={`font-medium ${f.fieldValue === '*** Masked ***' ? 'text-orange-500 italic' : ''}`}>
                       {f.fieldValue}
                     </p>
-                    <p className="text-xs text-slate-400">Confidence: {(f.fieldProb * 100).toFixed(1)}%</p>
+                    <p className="text-xs text-slate-400">Confidence: {(f.probability * 100).toFixed(1)}%</p>
                   </div>
                 ))}
               </div>

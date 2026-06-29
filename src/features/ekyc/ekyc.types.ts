@@ -57,7 +57,7 @@ export interface EkycSessionDetail {
   ocr: {
     statusCode: number;
     message: string;
-    fields: { fieldName: string; fieldValue: string; fieldProb: number }[];
+    fields: { fieldName: string; fieldValue: string; probability: number }[];
   } | null;
   warnings: { code: string; msg: string }[];
   tamperingFindings: { code: string; msg: string }[];
