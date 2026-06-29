@@ -8,6 +8,7 @@ import { PlaceholderPage } from './pages/PlaceholderPage';
 import { InternalLayout } from './layouts/InternalLayout';
 import { EkycListPage } from './pages/ekyc/EkycListPage';
 import { EkycDetailPage } from './pages/ekyc/EkycDetailPage';
+import { UsersPage } from './pages/UsersPage';
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();
 
@@ -35,6 +36,7 @@ const RouteTracker = () => {
 
     const feature =
       location.pathname.startsWith('/dashboard') ? 'internal_dashboard' :
+      location.pathname.startsWith('/users') ? 'users' :
       location.pathname.startsWith('/ekyc-review') ? 'ekyc_review' :
       location.pathname.startsWith('/analytics') ? 'analytics' :
       undefined;
@@ -71,7 +73,7 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/users" element={<PlaceholderPage />} />
+          <Route path="/users" element={<UsersPage />} />
           <Route path="/ekyc-review" element={<EkycListPage />} />
           <Route path="/ekyc-review/:id" element={<EkycDetailPage />} />
           <Route path="/trends" element={<PlaceholderPage />} />
