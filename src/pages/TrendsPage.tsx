@@ -229,6 +229,8 @@ export const TrendsPage: React.FC = () => {
                 <p className="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500">Chưa có project cache. Hãy sync projects trước.</p>
               ) : projects.map((project) => {
                 const active = project.id === selectedProjectId;
+                const hasSignals = project.stats.posts > 0 || project.stats.hotKeywords > 0 || project.stats.hotPosts > 0 || project.stats.trends > 0;
+                const latestJob = project.lastSyncJobs[0];
                 return (
                   <button
                     key={project.id}
@@ -240,13 +242,26 @@ export const TrendsPage: React.FC = () => {
                         <p className="font-semibold text-slate-900">{project.name}</p>
                         <p className="mt-1 text-xs text-slate-500">{project.type} • {project.sourceName || 'mixed sources'}</p>
                       </div>
-                      <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">{project.stats.trends} trends</span>
+                      <div className="flex flex-col items-end gap-2">
+                        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">{project.stats.trends} trends</span>
+                        <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${hasSignals ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                          {hasSignals ? 'LIVE DATA' : 'NO DATA YET'}
+                        </span>
+                      </div>
                     </div>
                     <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-slate-500">
                       <div className="rounded-xl bg-white px-3 py-2">Posts: <span className="font-semibold text-slate-800">{project.stats.posts}</span></div>
                       <div className="rounded-xl bg-white px-3 py-2">Keywords: <span className="font-semibold text-slate-800">{project.stats.hotKeywords}</span></div>
                       <div className="rounded-xl bg-white px-3 py-2">Hot posts: <span className="font-semibold text-slate-800">{project.stats.hotPosts}</span></div>
                     </div>
+                    {latestJob && (
+                      <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500">
+                        <span>Last job: <span className="font-semibold text-slate-700">{latestJob.jobType}</span></span>
+                        <span className={`rounded-full px-2 py-1 font-semibold ${latestJob.status === 'SUCCESS' ? 'bg-emerald-50 text-emerald-700' : latestJob.status === 'FAILED' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                          {latestJob.status} • {latestJob.pulledCount}
+                        </span>
+                      </div>
+                    )}
                   </button>
                 );
               })}

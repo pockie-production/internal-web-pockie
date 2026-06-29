@@ -15,6 +15,10 @@ export interface DashboardOverview {
     ocrJobsToday: MetricValue;
     pendingTrends: MetricValue;
     activeVouchers: MetricValue;
+    vnSocialProjectsCached: MetricValue;
+    vnSocialProjectsWithData: MetricValue;
+    vnSocialPostsSynced: MetricValue;
+    vnSocialSignals: MetricValue;
   };
   userGrowth: { date: string; users: number }[];
   queues: {
@@ -22,6 +26,7 @@ export interface DashboardOverview {
     pendingTrends: ActionQueueItem[];
     expiringVouchers: ActionQueueItem[];
     systemIssues: ActionQueueItem[];
+    vnSocialProjects: ActionQueueItem[];
   };
 }
 

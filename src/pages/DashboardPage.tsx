@@ -118,6 +118,10 @@ export const DashboardPage: React.FC = () => {
         <MetricCard title="OCR Jobs Today" metric={overview?.metrics.ocrJobsToday} loading={loading} />
         <MetricCard title="Pending Trends" metric={overview?.metrics.pendingTrends} loading={loading} />
         <MetricCard title="Active Vouchers" metric={overview?.metrics.activeVouchers} loading={loading} />
+        <MetricCard title="VnSocial Projects" metric={overview?.metrics.vnSocialProjectsCached} loading={loading} />
+        <MetricCard title="Projects With Data" metric={overview?.metrics.vnSocialProjectsWithData} loading={loading} />
+        <MetricCard title="VnSocial Posts" metric={overview?.metrics.vnSocialPostsSynced} loading={loading} />
+        <MetricCard title="VnSocial Signals" metric={overview?.metrics.vnSocialSignals} loading={loading} />
       </div>
 
       {/* Charts */}
@@ -171,6 +175,7 @@ export const DashboardPage: React.FC = () => {
             <div className="bg-white rounded-2xl h-80 animate-pulse border border-gray-100"></div>
             <div className="bg-white rounded-2xl h-80 animate-pulse border border-gray-100"></div>
             <div className="bg-white rounded-2xl h-80 animate-pulse border border-gray-100"></div>
+            <div className="bg-white rounded-2xl h-80 animate-pulse border border-gray-100"></div>
           </>
         ) : (
           <>
@@ -178,6 +183,7 @@ export const DashboardPage: React.FC = () => {
             <ActionQueueCard title="Pending Trends" items={overview?.queues.pendingTrends || []} />
             <ActionQueueCard title="Expiring Vouchers" items={overview?.queues.expiringVouchers || []} />
             <ActionQueueCard title="Recent System Issues" items={overview?.queues.systemIssues || []} />
+            <ActionQueueCard title="VnSocial Signals" items={overview?.queues.vnSocialProjects || []} />
           </>
         )}
       </div>
