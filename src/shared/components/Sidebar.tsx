@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, UserCheck, TrendingUp, Tag, Landmark, Megaphone, BarChart3, ShieldAlert } from 'lucide-react';
+import { trackInternalEvent } from '../../lib/analytics';
 
 const MENU_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -30,6 +31,12 @@ export const Sidebar: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
+              onClick={() => trackInternalEvent({
+                eventName: 'sidebar_navigation_click',
+                page: location.pathname,
+                feature: 'internal_dashboard',
+                payload: { targetPath: item.path, label: item.label },
+              })}
               className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                 isActive
                   ? 'bg-blue-50 text-blue-700'

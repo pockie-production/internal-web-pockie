@@ -4,6 +4,7 @@ import { ArrowLeft, AlertTriangle, CheckCircle, XCircle, FileText, User, ShieldA
 import { getEkycSessionDetail, approveEkycSession, rejectEkycSession, retryEkycSession, addEkycNote } from '../../features/ekyc/ekyc.api';
 import type { EkycSessionDetail } from '../../features/ekyc/ekyc.types';
 import { useAuthStore } from '../../store/authStore';
+import { trackInternalEvent } from '../../lib/analytics';
 
 export const EkycDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,12 @@ export const EkycDetailPage = () => {
       if (id) {
         const data = await getEkycSessionDetail(id);
         setDetail(data);
+        trackInternalEvent({
+          eventName: 'ekyc_detail_loaded',
+          page: `/ekyc-review/${id}`,
+          feature: 'ekyc_review',
+          payload: { sessionId: id, status: data.session.status },
+        });
       }
     } catch (error) {
       console.error('Failed to fetch detail', error);
@@ -40,6 +47,12 @@ export const EkycDetailPage = () => {
     try {
       setActionLoading(true);
       await approveEkycSession(id, noteInput);
+      trackInternalEvent({
+        eventName: 'ekyc_approved',
+        page: `/ekyc-review/${id}`,
+        feature: 'ekyc_review',
+        payload: { sessionId: id },
+      });
       await fetchDetail();
       setNoteInput('');
     } catch (error) {
@@ -54,6 +67,12 @@ export const EkycDetailPage = () => {
     try {
       setActionLoading(true);
       await rejectEkycSession(id, actionReason, noteInput);
+      trackInternalEvent({
+        eventName: 'ekyc_rejected',
+        page: `/ekyc-review/${id}`,
+        feature: 'ekyc_review',
+        payload: { sessionId: id, reason: actionReason },
+      });
       await fetchDetail();
       setNoteInput('');
       setActionReason('');
@@ -69,6 +88,12 @@ export const EkycDetailPage = () => {
     try {
       setActionLoading(true);
       await retryEkycSession(id, actionReason, noteInput);
+      trackInternalEvent({
+        eventName: 'ekyc_retry_requested',
+        page: `/ekyc-review/${id}`,
+        feature: 'ekyc_review',
+        payload: { sessionId: id, reason: actionReason },
+      });
       await fetchDetail();
       setNoteInput('');
       setActionReason('');
@@ -84,6 +109,12 @@ export const EkycDetailPage = () => {
     try {
       setActionLoading(true);
       await addEkycNote(id, noteInput);
+      trackInternalEvent({
+        eventName: 'ekyc_note_added',
+        page: `/ekyc-review/${id}`,
+        feature: 'ekyc_review',
+        payload: { sessionId: id, noteLength: noteInput.length },
+      });
       await fetchDetail();
       setNoteInput('');
     } catch (error) {

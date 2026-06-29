@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, Filter, AlertCircle, CheckCircle2, XCircle, Clock, ShieldAlert } from 'lucide-react';
 import { getEkycSessions } from '../../features/ekyc/ekyc.api';
 import type { EkycSessionListItem, EkycSessionStatus, EkycRiskLevel } from '../../features/ekyc/ekyc.types';
+import { trackInternalEvent } from '../../lib/analytics';
 
 export const EkycListPage = () => {
   const [sessions, setSessions] = useState<EkycSessionListItem[]>([]);
@@ -16,6 +17,16 @@ export const EkycListPage = () => {
       setLoading(true);
       const res = await getEkycSessions({ search, status: statusFilter, riskLevel: riskFilter, limit: 50 });
       setSessions(res.items);
+      trackInternalEvent({
+        eventName: 'ekyc_queue_loaded',
+        page: '/ekyc-review',
+        feature: 'ekyc_review',
+        payload: {
+          itemCount: res.items.length,
+          statusFilter: statusFilter || 'ALL',
+          riskFilter: riskFilter || 'ALL',
+        },
+      });
     } catch (error) {
       console.error('Failed to fetch sessions', error);
     } finally {
@@ -29,6 +40,12 @@ export const EkycListPage = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    trackInternalEvent({
+      eventName: 'ekyc_queue_search',
+      page: '/ekyc-review',
+      feature: 'ekyc_review',
+      payload: { search, statusFilter: statusFilter || 'ALL', riskFilter: riskFilter || 'ALL' },
+    });
     fetchSessions();
   };
 
@@ -155,6 +172,12 @@ export const EkycListPage = () => {
                     <td className="px-6 py-4">
                       <Link 
                         to={`/ekyc-review/${session.id}`}
+                        onClick={() => trackInternalEvent({
+                          eventName: 'ekyc_review_open',
+                          page: '/ekyc-review',
+                          feature: 'ekyc_review',
+                          payload: { sessionId: session.id, status: session.status },
+                        })}
                         className="text-blue-600 hover:text-blue-700 font-medium text-sm bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
                       >
                         Review

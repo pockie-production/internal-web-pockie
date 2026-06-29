@@ -8,6 +8,7 @@ import { SimpleLineChart } from '../features/dashboard/components/SimpleLineChar
 import { SimpleBarChart } from '../features/dashboard/components/SimpleBarChart';
 import { ActionQueueCard } from '../features/dashboard/components/ActionQueueCard';
 import { SystemHealthCard } from '../features/dashboard/components/SystemHealthCard';
+import { trackInternalEvent } from '../lib/analytics';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -37,6 +38,18 @@ export const DashboardPage: React.FC = () => {
 
       if (overviewData.status === 'rejected') {
         setError('Failed to load primary dashboard data.');
+      } else {
+        trackInternalEvent({
+          eventName: 'internal_dashboard_loaded',
+          page: '/dashboard',
+          feature: 'internal_dashboard',
+          payload: {
+            metricsLoaded: Object.keys(overviewData.value.metrics).length,
+            hasFunnel: funnelData.status === 'fulfilled',
+            hasFeatureUsage: usageData.status === 'fulfilled',
+            hasHealth: healthData.status === 'fulfilled',
+          },
+        });
       }
     } catch (err) {
       setError('An unexpected error occurred while fetching dashboard data.');
@@ -79,7 +92,14 @@ export const DashboardPage: React.FC = () => {
           )}
         </div>
         <button
-          onClick={fetchDashboardData}
+          onClick={() => {
+            trackInternalEvent({
+              eventName: 'dashboard_refresh_click',
+              page: '/dashboard',
+              feature: 'internal_dashboard',
+            });
+            void fetchDashboardData();
+          }}
           disabled={loading}
           className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
