@@ -10,6 +10,10 @@ import { EkycListPage } from './pages/ekyc/EkycListPage';
 import { EkycDetailPage } from './pages/ekyc/EkycDetailPage';
 import { UsersPage } from './pages/UsersPage';
 import { TrendsPage } from './pages/TrendsPage';
+import { VouchersPage } from './pages/vouchers/VouchersPage';
+import { CampaignsPage } from './pages/campaigns';
+import { GamificationPage } from './pages/gamification/GamificationPage';
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuthStore();
 
@@ -40,6 +44,7 @@ const RouteTracker = () => {
       location.pathname.startsWith('/users') ? 'users' :
       location.pathname.startsWith('/trends') ? 'trends' :
       location.pathname.startsWith('/ekyc-review') ? 'ekyc_review' :
+      location.pathname.startsWith('/gamification') ? 'gamification' :
       location.pathname.startsWith('/analytics') ? 'analytics' :
       undefined;
 
@@ -79,9 +84,10 @@ function App() {
           <Route path="/ekyc-review" element={<EkycListPage />} />
           <Route path="/ekyc-review/:id" element={<EkycDetailPage />} />
           <Route path="/trends" element={<TrendsPage />} />
-          <Route path="/vouchers" element={<PlaceholderPage />} />
+          <Route path="/vouchers" element={<VouchersPage />} />
           <Route path="/banks" element={<PlaceholderPage />} />
-          <Route path="/campaigns" element={<PlaceholderPage />} />
+          <Route path="/campaigns" element={<CampaignsPage />} />
+          <Route path="/gamification" element={<GamificationPage />} />
           <Route path="/analytics" element={<PlaceholderPage />} />
           <Route path="/audit-logs" element={<PlaceholderPage />} />
         </Route>

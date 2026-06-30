@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, UserCheck, TrendingUp, Tag, Landmark, Megaphone, BarChart3, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Users, UserCheck, TrendingUp, Tag, Landmark, Megaphone, BarChart3, ShieldAlert, Gamepad2 } from 'lucide-react';
 import { trackInternalEvent } from '../../lib/analytics';
 
 const MENU_ITEMS = [
@@ -11,6 +11,7 @@ const MENU_ITEMS = [
   { path: '/vouchers', label: 'Vouchers', icon: Tag },
   { path: '/banks', label: 'Banks', icon: Landmark },
   { path: '/campaigns', label: 'Campaigns', icon: Megaphone },
+  { path: '/gamification', label: 'Gamification', icon: Gamepad2 },
   { path: '/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/audit-logs', label: 'Audit Logs', icon: ShieldAlert },
 ];

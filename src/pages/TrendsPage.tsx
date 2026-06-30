@@ -10,7 +10,7 @@ import {
   getVnSocialSyncJobs,
   rejectTrend,
   syncVnSocialProjectHotKeywords,
-  syncVnSocialProjectHotPosts,
+ 
   syncVnSocialProjectPosts,
   syncVnSocialProjects,
 } from '../features/trends/trends.api';
